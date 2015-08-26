@@ -1,5 +1,7 @@
-MySQL, OAuth, and Google Apps CAS4 Overlay Template
+MsSQL, MySQL, OAuth, and Google Apps CAS4 Overlay Template
 ============================
+
+If you don't want MSSQL or to deploy this at root, you back a few commits in the repo.  If you want to help organize the readme, feel free to do so and send a pull request.
 
 IMPORTANT STEP 1: Copy cas.properties.template to cas.properties!  (This ideally prevents your credentials from being checked into git.)
 
