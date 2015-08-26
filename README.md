@@ -3,11 +3,14 @@ MySQL, OAuth, and Google Apps CAS4 Overlay Template
 
 IMPORTANT STEP 1: Copy cas.properties.template to cas.properties!  (This ideally prevents your credentials from being checked into git.)
 
+I've now made this deploy at root on the web server.  If you want it in the cas directory on the server, edit build.xml and change
+the project name from ROOT to cas. (`<project name="ROOT" default="deploy" basedir=".">`)
+
+If you want to keep it at root, you'll need to `sudo rm -rf /var/lib/tomcat7/webapps/ROOT`
+
 I've tried to put good comments around things so you can look at the file changes and remove features you don't need.
 
 We never actually used the Google Apps SSO part of this template because that doesn't add SSO to Gmail for IOS so we decided that it wasn't worth it since we'd still need to sync passwords with gmail.  We tried it once with CAS 3, and it failed and locked up our account for a day due to propogation while turning it off so if you use it, be sure to set the IP filter to just your machine first to see if it will work before enabling it for everyone.
-
-I also had a difficult time getting tomcat7 running with SSL so if you need help with that create an issue, and I'll try to add a page on that.
 
 Before running this, you will want to have at least installed the following on Ubuntu:
 
@@ -15,24 +18,21 @@ Before running this, you will want to have at least installed the following on U
 
 Again for Ubuntu 14.04 in your .bashrc add the following lines:
 
-```
-export CATALINA_HOME=/usr/share/tomcat7
-export MAVEN_HOME=/usr/share/maven
-export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/jre```
+    export CATALINA_HOME=/usr/share/tomcat7
+    export MAVEN_HOME=/usr/share/maven
+    export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/jre
 
 
 You may also need to add these sym links:
 
-```
-cd /usr/share/tomcat
-ln -s /var/lib/tomcat7/webapps/ ./webapps
-ln -s /var/lib/tomcat7/common/ ./common
-sudo ln -s /var/lib/tomcat7/server/ ./server
-sudo ln -s /var/lib/tomcat7/shared/ ./shared
-
-cd /usr/share/tomcat7/lib
-sudo ln -s ../../java/mysql-connector-java.jar mysql-connector-java.jar
-```
+     cd /usr/share/tomcat
+     ln -s /var/lib/tomcat7/webapps/ ./webapps
+     ln -s /var/lib/tomcat7/common/ ./common
+     sudo ln -s /var/lib/tomcat7/server/ ./server
+     sudo ln -s /var/lib/tomcat7/shared/ ./shared
+     
+     cd /usr/share/tomcat7/lib
+     sudo ln -s ../../java/mysql-connector-java.jar mysql-connector-java.jar
 
 To Setup the CAS log file at the default location:
 ```

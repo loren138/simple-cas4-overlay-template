@@ -19,7 +19,7 @@
     under the License.
 
 -->
-<project name="cas" default="deploy" basedir=".">
+<project name="ROOT" default="deploy" basedir=".">
 
 	<!-- ******************* PROPERTIES ************************* -->
 	<property environment="env" />
@@ -103,8 +103,8 @@
 
 	<target name="copy" description="Copy artifacts over to tomcat" depends="package">
 		<copy overwrite="true"
-		      todir="${catalina.home}\webapps"
-		      file="target/${ant.project.name}.war"
+		      tofile="${catalina.home}\webapps\${ant.project.name}.war"
+		      file="target/cas.war"
 			  verbose="true"
 		/>
 
