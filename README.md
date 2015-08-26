@@ -74,6 +74,13 @@ For how to use the OAuth support, see http://jasig.github.io/cas/4.0.x/protocol/
 
 You will need to configure your services in `/src/main/webapp/WEB-INF/deployerConfigContext.xml`.
 
+# SQL Server Support
+
+* Get the SQL Server JAR from https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=11774 (you may need to use IE to get the download to actually start)
+* Extract it `tar -xvf sqljdbc_4.2.6420.100_enu.tar.gz ` and `sudo mv ./sqljdbc_4.2/enu/sqljdbc42.jar /usr/share/java/`
+* `sudo chown root:root /usr/share/java/sqljdbc42.jar`
+* `cd /usr/share/tomcat7/lib` and `sudo ln -s ../../java/sqljdbc42.jar ./`
+
 # Start of original Readme
 Generic CAS maven war overlay to exercise the latest versions of CAS 4.x line. This overlay could be freely used as a starting template for local CAS maven war overlays.
 

@@ -107,12 +107,19 @@ password.policy.warningDays=30
 password.policy.url=https://info.sbts.edu/user/reset_password
 
 # == Basic database connection pool configuration ==
+# For MSSQL Use com.microsoft.sqlserver.jdbc.SQLServerDriver
 database.driverClass=com.mysql.jdbc.Driver
 database.url=jdbc:mysql://host:3306/database
 database.user=dbUser
 database.password=dbPassword
 database.pool.minSize=6
 database.pool.maxSize=18
+
+# I use a second connection to get passwords and attributes from different databases
+# You can remove this and a datasource in deployer if you so desire
+database2.url=jdbc:mysql://host:3306/database
+database2.user=dbUser
+database2.password=dbPassword
  
 # Maximum amount of time to wait in ms for a connection to become
 # available when the pool is exhausted

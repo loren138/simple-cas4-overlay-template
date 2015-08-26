@@ -60,7 +60,9 @@
                    | If more than one instance of the same handler class is configured, you must explicitly
                    | set its name to something other than its default name (typically the simple class name).
                    -->
+<!--
                 <entry key-ref="proxyAuthenticationHandler" value-ref="proxyPrincipalResolver" />
+-->
                 <!--
                 <entry key-ref="primaryAuthenticationHandler" value-ref="primaryPrincipalResolver" />
 		-->
@@ -90,7 +92,7 @@
         </property>
     </bean>
 
-    <bean id="dataSource"
+    <bean id="dataSourcePRD"
       class="com.mchange.v2.c3p0.ComboPooledDataSource"
       p:driverClass="${database.driverClass}"
       p:jdbcUrl="${database.url}"
@@ -106,6 +108,24 @@
       p:acquireRetryDelay="${database.pool.acquireRetryDelay}"
       p:idleConnectionTestPeriod="${database.pool.idleConnectionTestPeriod}"
       p:preferredTestQuery="${database.pool.connectionHealthQuery}" />
+
+    <bean id="dataSourcePortal"
+      class="com.mchange.v2.c3p0.ComboPooledDataSource"
+      p:driverClass="${database.driverClass}"
+      p:jdbcUrl="${database2.url}"
+      p:user="${database2.user}"
+      p:password="${database2.password}"
+      p:initialPoolSize="${database.pool.minSize}"
+      p:minPoolSize="${database.pool.minSize}"
+      p:maxPoolSize="${database.pool.maxSize}"
+      p:maxIdleTimeExcessConnections="${database.pool.maxIdleTime}"
+      p:checkoutTimeout="${database.pool.maxWait}"
+      p:acquireIncrement="${database.pool.acquireIncrement}"
+      p:acquireRetryAttempts="${database.pool.acquireRetryAttempts}"
+      p:acquireRetryDelay="${database.pool.acquireRetryDelay}"
+      p:idleConnectionTestPeriod="${database.pool.idleConnectionTestPeriod}"
+      p:preferredTestQuery="${database.pool.connectionHealthQuery}" />
+
 
     <!-- Required for proxy ticket mechanism. -->
     <bean id="proxyAuthenticationHandler"
@@ -132,9 +152,11 @@
 
     <bean id="dbAuthHandler"
       class="org.jasig.cas.adaptors.jdbc.QueryDatabaseAuthenticationHandler"
-      p:dataSource-ref="dataSource"
+      p:dataSource-ref="dataSourcePortal"
       p:passwordEncoder-ref="passwordEncoder"
-      p:sql="select password from users where username=? and active=1" />
+      p:sql="SELECT passwordSha1 FROM dbo.users WHERE username is not null AND username != '' AND passwordSha1 is not null AND username = ?"
+      />
+     <!--- p:sql="select password from users where username=? and active=1" /> -->
 
     <!-- Required for proxy ticket mechanism -->
     <bean id="proxyPrincipalResolver"
@@ -165,8 +187,10 @@
     <!-- A better attribute repository from MySQL -->
     <bean id="mysqlAttributeRepository" class="org.jasig.services.persondir.support.jdbc.SingleRowJdbcPersonAttributeDao">
 
-        <constructor-arg index="0" ref="dataSource"/>
-        <constructor-arg index="1" value="select * from users where {0}" />
+        <constructor-arg index="0" ref="dataSourcePRD"/>
+        <constructor-arg index="1" value="select * from sbs_app_users where {0}" />
+        <!--<constructor-arg index="1" value="select * from users where {0}" />
+-->
         <!-- This creates the query where string -->
         <property name="queryAttributeMapping">
            <map>
@@ -179,9 +203,8 @@
             <map>
               <!-- this line configures google apps username -->
               <!-- https://wiki.jasig.org/display/CASUM/Google+Apps+from+MS-AD+using+the+'mail'+attribute -->
-              <entry key="email" value="EmailAddress" />
-              <entry key="username" value="username" />
-              <entry key="id_num" value="ID_NUM" />
+              <entry key="EMAIL_ADDRESS" value="EmailAddress" />
+              <entry key="ID_NUM" value="ID_NUM" />
             </map>
         </property>
     </bean>
