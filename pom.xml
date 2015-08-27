@@ -56,18 +56,6 @@
             <artifactId>c3p0</artifactId>
             <version>0.9.1.2</version>
         </dependency>
-        <!-- This dependency only needed for Google Apps Integration -->
-        <dependency>
-            <groupId>org.jasig.cas</groupId>
-            <artifactId>cas-server-support-saml</artifactId>
-            <version>${cas.version}</version>
-        </dependency>
-        <!-- Make CAS support the Oauth2.0 protocol -->
-        <dependency>
-            <groupId>org.jasig.cas</groupId>
-            <artifactId>cas-server-support-oauth</artifactId>
-            <version>${cas.version}</version>
-        </dependency>
     </dependencies>
 
     <properties>
