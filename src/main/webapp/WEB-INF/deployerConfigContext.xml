@@ -169,25 +169,35 @@
        | Resolves a principal from a credential using an attribute repository that is configured to resolve
        | against a deployer-specific store (e.g. LDAP).
        -->
-<!--
     <bean id="primaryPrincipalResolver"
           class="org.jasig.cas.authentication.principal.PersonDirectoryPrincipalResolver" >
         <property name="attributeRepository" ref="attributeRepository" />
     </bean>
--->
-    <!--
-    Bean that defines the attributes that a service may return.  This example uses the Stub/Mock version.  A real implementation
-    may go against a database or LDAP server.  The id should remain "attributeRepository" though.
-    +-->
-    <bean id="attributeRepository" class="org.jasig.services.persondir.support.StubPersonAttributeDao"
-            p:backingMap-ref="attrRepoBackingMap" />
-    
-    <util:map id="attrRepoBackingMap">
-        <entry key="uid" value="uid" />
-    </util:map>
+
 
     <!-- A better attribute repository from MySQL -->
-<!-- if you need an attribute repo see https://github.com/loren138/simple-cas4-overlay-template for a potential sample -->
+    <bean id="attributeRepository" class="org.jasig.services.persondir.support.jdbc.SingleRowJdbcPersonAttributeDao">
+
+        <constructor-arg index="0" ref="dataSourcePortal"/>
+        <constructor-arg index="1" value="select * from dbo.users where {0}" />
+        <!--<constructor-arg index="1" value="select * from users where {0}" />
+-->
+        <!-- This creates the query where string -->
+        <property name="queryAttributeMapping">
+           <map>
+              <entry key="username" value="username" />
+           </map>
+        </property>
+
+        <!-- This maps columns from the query result to values from CAS, thus each key below must be a column name -->
+        <property name="resultAttributeMapping">
+            <map>
+              <!-- this line configures google apps username -->
+              <!-- https://wiki.jasig.org/display/CASUM/Google+Apps+from+MS-AD+using+the+'mail'+attribute -->
+              <entry key="PROFILE_A" value="PROFILE_A" />
+            </map>
+        </property>
+    </bean>
 
     <!-- 
     Sample, in-memory data store for the ServiceRegistry. A real implementation
@@ -214,7 +224,17 @@
             <property name="id" value="1" />
             <property name="name" value="HTTP(s) on sbts.edu" />
             <property name="description" value="Allows HTTP(S) protocols on sbts.edu" />
-            <property name="serviceId" value="^(https?)://([A-Za-z0-9_-]+\.)*sbts\.edu/.*" />
+            <property name="serviceId" value="^(https?)://([A-Za-z0-9_-]+\.)*sbts\.edu/{0,1}.*" />
+            <property name="evaluationOrder" value="0" />
+            <property name="attributeFilter">
+              <bean class="org.jasig.cas.services.support.RegisteredServiceRegexAttributeFilter" c:regex="^\w{3}$" /> 
+            </property>
+        </bean>
+        <bean class="org.jasig.cas.services.RegexRegisteredService">
+            <property name="id" value="2" />
+            <property name="name" value="HTTP(s) on mysbts.app" />
+            <property name="description" value="Allows HTTP(S) protocols on test domain" />
+            <property name="serviceId" value="^(https?)://mysbts\.app/.*" />
             <property name="evaluationOrder" value="0" />
             <property name="attributeFilter">
               <bean class="org.jasig.cas.services.support.RegisteredServiceRegexAttributeFilter" c:regex="^\w{3}$" /> 
