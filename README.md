@@ -28,8 +28,8 @@ For Ubuntu 14.04 in your .bashrc add the following lines:
 You may also need to add these sym links:
 
      cd /usr/share/tomcat
-     ln -s /var/lib/tomcat7/webapps/ ./webapps
-     ln -s /var/lib/tomcat7/common/ ./common
+     sudo ln -s /var/lib/tomcat7/webapps/ ./webapps
+     sudo ln -s /var/lib/tomcat7/common/ ./common
      sudo ln -s /var/lib/tomcat7/server/ ./server
      sudo ln -s /var/lib/tomcat7/shared/ ./shared
      
@@ -38,6 +38,12 @@ You may also need to add these sym links:
 
 To Setup the CAS log file at the default location:
 ```
+sudo mkdir /etc/cas
+sudo touch /etc/cas/log4j2.xml
+sudo touch /etc/cas/log4j.xml
+sudo touch /etc/cas/cas.properties
+sudo chgrp tomcat7 /etc/cas/*
+sudo chmod og+w /etc/cas/*
 sudo mkdir /var/log/cas
 sudo chown tomcat7:tomcat7 /var/log/cas
 sudo touch /var/log/cas/cas.log
