@@ -5,20 +5,19 @@ If you don't want MSSQL or to deploy this at root, you back a few commits in the
 
 IMPORTANT STEP 1: Copy cas.properties.template to cas.properties!  (This ideally prevents your credentials from being checked into git.)
 
-I've now made this deploy at root on the web server.  If you want it in the cas directory on the server, edit build.xml and change
-the project name from ROOT to cas. (`<project name="ROOT" default="deploy" basedir=".">`)
-
-If you want to keep it at root, you'll need to `sudo rm -rf /var/lib/tomcat7/webapps/ROOT`
-
-I've tried to put good comments around things so you can look at the file changes and remove features you don't need.
-
 We never actually used the Google Apps SSO part of this template because that doesn't add SSO to Gmail for IOS so we decided that it wasn't worth it since we'd still need to sync passwords with gmail.  We tried it once with CAS 3, and it failed and locked up our account for a day due to propogation while turning it off so if you use it, be sure to set the IP filter to just your machine first to see if it will work before enabling it for everyone.
 
 Before running this, you will want to have at least installed the following on Ubuntu:
 
-`sudo apt-get install tomcat7 maven ant maven-ant-helper openjdk-7-jdk mysql libmysql-java`
+`sudo apt-get install tomcat7 maven ant maven-ant-helper openjdk-7-jdk libmysql-java`
 
-Again for Ubuntu 14.04 in your .bashrc add the following lines:
+I've now made this deploy at root on the web server.  If you want it in the cas directory on the server, edit build.xml and change
+the project name from ROOT to cas. (`<project name="ROOT" default="deploy" basedir=".">`)
+
+If you want to keep it at root, you'll need to `sudo rm -rf /var/lib/tomcat7/webapps/ROOT`
+I've tried to put good comments around things so you can look at the file changes and remove features you don't need.
+
+For Ubuntu 14.04 in your .bashrc add the following lines:
 
     export CATALINA_HOME=/usr/share/tomcat7
     export MAVEN_HOME=/usr/share/maven
@@ -45,6 +44,10 @@ sudo chown tomcat7:tomcat7 /var/log/cas/cas.log
 ```
 
 Note: Error messages may be found in the cas log (/var/log/cas/cas.log) but more expansive ones are likely in the tomcat7 log at (/var/log/tomcat7/catalina.log).
+
+#Building Cas
+
+I use this alais `alias casBuild='sudo rm -rf /var/lib/tomcat7/webapps/ROOT/ && sudo service tomcat7 stop && ant deploy && sudo service tomcat7 start'`
 
 # Google Apps SAML Integration
 http://jasig.github.io/cas/4.0.x/protocol/SAML-Protocol.html
@@ -79,9 +82,9 @@ You will need to configure your services in `/src/main/webapp/WEB-INF/deployerCo
 # SQL Server Support
 
 * Get the SQL Server JAR from https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=11774 (you may need to use IE to get the download to actually start)
-* Extract it `tar -xvf sqljdbc_4.2.6420.100_enu.tar.gz ` and `sudo mv ./sqljdbc_4.2/enu/sqljdbc42.jar /usr/share/java/`
-* `sudo chown root:root /usr/share/java/sqljdbc42.jar`
-* `cd /usr/share/tomcat7/lib` and `sudo ln -s ../../java/sqljdbc42.jar ./`
+* Extract it `tar -xvf sqljdbc_4.2.6420.100_enu.tar.gz ` and `sudo mv ./sqljdbc_4.2/enu/sqljdbc41.jar /usr/share/java/`
+* `sudo chown root:root /usr/share/java/sqljdbc41.jar`
+* `cd /usr/share/tomcat7/lib` && `sudo ln -s ../../java/sqljdbc41.jar ./`
 
 # Start of original Readme
 Generic CAS maven war overlay to exercise the latest versions of CAS 4.x line. This overlay could be freely used as a starting template for local CAS maven war overlays.
