@@ -171,12 +171,14 @@
        -->
     <bean id="primaryPrincipalResolver"
           class="org.jasig.cas.authentication.principal.PersonDirectoryPrincipalResolver" >
-        <property name="attributeRepository" ref="attributeRepository" />
+    	<!-- I didn't really test this part so it might not work right... -->
+        <!--<property name="attributeRepository" ref="attributeRepository" />-->
+        <property name="mysqlAttributeRepository" ref="mysqlAttributeRepository" />
     </bean>
 
 
     <!-- A better attribute repository from MySQL -->
-    <bean id="attributeRepository" class="org.jasig.services.persondir.support.jdbc.SingleRowJdbcPersonAttributeDao">
+    <bean id="mysqlAttributeRepository" class="org.jasig.services.persondir.support.jdbc.SingleRowJdbcPersonAttributeDao">
 
         <constructor-arg index="0" ref="dataSourcePortal"/>
         <constructor-arg index="1" value="select profile_a, RTRIM(first_name) as first_name, RTRIM(last_name) as last_name, RTRIM(city) as city, RTRIM(email_address) as email, id_num from dbo.users where {0}" />
