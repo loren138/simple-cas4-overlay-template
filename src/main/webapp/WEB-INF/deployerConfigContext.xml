@@ -250,7 +250,7 @@
             <property name="id" value="2" />
             <property name="name" value="HTTP(s) on mysbts.app" />
             <property name="description" value="Allows HTTP(S) protocols on test domain" />
-            <property name="serviceId" value="^(https?)://mysbts\.app/.*" />
+            <property name="serviceId" value="^(https?)://(mysbts|sbts-portal)\.app/.*" />
             <property name="evaluationOrder" value="0" />
 	    <property name="attributeReleasePolicy">
     		<bean class="org.jasig.cas.services.ReturnAllowedAttributeReleasePolicy">
