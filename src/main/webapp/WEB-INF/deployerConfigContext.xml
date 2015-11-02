@@ -267,6 +267,38 @@
     		</bean>
   	    </property>
         </bean>
+        <bean class="org.jasig.cas.services.RegexRegisteredService">
+            <property name="id" value="3" />
+            <property name="name" value="Dr. R. Albert Mohler Jr." />
+            <property name="description" value="You are logging into an app within Dr. Mohler's website." />
+            <property name="serviceId" value="^(https?)://([A-Za-z0-9_-]+\.)*albertmohler\.com/{0,1}.*" />
+            <property name="evaluationOrder" value="0" />
+	    <property name="attributeReleasePolicy">
+    		<bean class="org.jasig.cas.services.ReturnAllowedAttributeReleasePolicy">
+        	    <property name="allowedAttributes">
+            		<list>
+                	    <value>profile_a</value>
+            		</list>
+        	    </property>
+    		</bean>
+  	    </property>
+        </bean>
+        <bean class="org.jasig.cas.services.RegexRegisteredService">
+            <property name="id" value="4" />
+            <property name="name" value="Legacy Hotel" />
+            <property name="description" value="You are logging into an app within the Legacy Hotel." />
+            <property name="serviceId" value="^(https?)://([A-Za-z0-9_-]+\.)*legacyhotellouisville\.com/{0,1}.*" />
+            <property name="evaluationOrder" value="0" />
+	    <property name="attributeReleasePolicy">
+    		<bean class="org.jasig.cas.services.ReturnAllowedAttributeReleasePolicy">
+        	    <property name="allowedAttributes">
+            		<list>
+                	    <value>profile_a</value>
+            		</list>
+        	    </property>
+    		</bean>
+  	    </property>
+        </bean>
     </util:list>
 
 <bean id="auditTrailManager"
