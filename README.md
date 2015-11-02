@@ -1,5 +1,6 @@
 MsSQL, MySQL, OAuth, and Google Apps CAS4 Overlay Template
 ============================
+For tomcat setup see tomcatSetup.md (also in this repo).
 
 If you don't want MSSQL or to deploy this at root, you back a few commits in the repo.  If you want to help organize the readme, feel free to do so and send a pull request.
 
