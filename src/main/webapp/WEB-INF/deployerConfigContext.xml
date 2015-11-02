@@ -179,7 +179,7 @@
     <bean id="attributeRepository" class="org.jasig.services.persondir.support.jdbc.SingleRowJdbcPersonAttributeDao">
 
         <constructor-arg index="0" ref="dataSourcePortal"/>
-        <constructor-arg index="1" value="select * from dbo.users where {0}" />
+        <constructor-arg index="1" value="select profile_a, RTRIM(first_name) as first_name, RTRIM(last_name) as last_name, RTRIM(city) as city, RTRIM(email_address) as email, id_num from dbo.users where {0}" />
         <!--<constructor-arg index="1" value="select * from users where {0}" />
 -->
         <!-- This creates the query where string -->
@@ -194,7 +194,12 @@
             <map>
               <!-- this line configures google apps username -->
               <!-- https://wiki.jasig.org/display/CASUM/Google+Apps+from+MS-AD+using+the+'mail'+attribute -->
-              <entry key="PROFILE_A" value="PROFILE_A" />
+              <entry key="profile_a" value="profile_a" />
+              <entry key="first_name" value="first_name" />
+              <entry key="last_name" value="last_name" />
+              <entry key="city" value="city" />
+              <entry key="email" value="email" />
+              <entry key="id_num" value="id_num" />
             </map>
         </property>
     </bean>
@@ -222,12 +227,23 @@
         -->
         <bean class="org.jasig.cas.services.RegexRegisteredService">
             <property name="id" value="1" />
-            <property name="name" value="HTTP(s) on sbts.edu" />
-            <property name="description" value="Allows HTTP(S) protocols on sbts.edu" />
+            <property name="name" value="The Southern Baptist Theological Seminary" />
+            <property name="description" value="You are logging into an app within the SBTS domain." />
             <property name="serviceId" value="^(https?)://([A-Za-z0-9_-]+\.)*sbts\.edu/{0,1}.*" />
             <property name="evaluationOrder" value="0" />
-            <property name="attributeFilter">
-              <bean class="org.jasig.cas.services.support.RegisteredServiceRegexAttributeFilter" c:regex="^\w{3}$" /> 
+	    <property name="attributeReleasePolicy">
+    		<bean class="org.jasig.cas.services.ReturnAllowedAttributeReleasePolicy">
+        	    <property name="allowedAttributes">
+            		<list>
+                	    <value>profile_a</value>
+                	    <value>first_name</value>
+                	    <value>last_name</value>
+                	    <value>id_num</value>
+                	    <value>city</value>
+                	    <value>email</value>
+            		</list>
+        	    </property>
+    		</bean>
             </property>
         </bean>
         <bean class="org.jasig.cas.services.RegexRegisteredService">
@@ -236,13 +252,27 @@
             <property name="description" value="Allows HTTP(S) protocols on test domain" />
             <property name="serviceId" value="^(https?)://mysbts\.app/.*" />
             <property name="evaluationOrder" value="0" />
-            <property name="attributeFilter">
-              <bean class="org.jasig.cas.services.support.RegisteredServiceRegexAttributeFilter" c:regex="^\w{3}$" /> 
-            </property>
+	    <property name="attributeReleasePolicy">
+    		<bean class="org.jasig.cas.services.ReturnAllowedAttributeReleasePolicy">
+        	    <property name="allowedAttributes">
+            		<list>
+                	    <value>profile_a</value>
+                	    <value>first_name</value>
+                	    <value>last_name</value>
+                	    <value>id_num</value>
+                	    <value>city</value>
+                	    <value>email</value>
+            		</list>
+        	    </property>
+    		</bean>
+  	    </property>
         </bean>
     </util:list>
-    
-    <bean id="auditTrailManager" class="com.github.inspektr.audit.support.Slf4jLoggingAuditTrailManager" />
+
+<bean id="auditTrailManager"
+  class="org.jasig.inspektr.audit.support.Slf4jLoggingAuditTrailManager" 
+  p:entrySeparator="${cas.audit.singleline.separator:|}"
+  p:useSingleLine="${cas.audit.singleline:false}"/>
     
     <bean id="healthCheckMonitor" class="org.jasig.cas.monitor.HealthCheckMonitor" p:monitors-ref="monitorsList" />
   
