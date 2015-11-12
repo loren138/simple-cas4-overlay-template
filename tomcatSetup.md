@@ -31,19 +31,12 @@ In `/etc/tomcat7/server.xml`:  Comment out the default connector and add on AJP 
                URIEncoding="UTF-8"
                redirectPort="8443" />
     -->
-    <Connector port="8009" protocol="AJP/1.3" maxConnections="256" keepAliveTimeout="30000" redirectPort="8443" />
+    <Connector port="8009" address="127.0.0.1" protocol="AJP/1.3" maxConnections="256" keepAliveTimeout="30000" redirectPort="8443" />
 ```
 
 In `/etc/defaults/tomcat7`, I merged the JAVA_OPTS between the two docs so my line is
 
 	JAVA_OPTS="-Djava.awt.headless=true -Xms512M -Xmx1024M -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=512m -XX:+CMSIncrementalMode"
-
-	sudo rm /etc/authbind/byport/80
-	sudo rm /etc/authbind/byport/443
-	Remove authbind=yes (set to no)
-	
-	You need to comment
-`<Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />` in the `/etc/tomcat7/server.xml` file.
 
 #Setting Up Apache
 
@@ -71,6 +64,7 @@ with
         #   SSL v2  is no longer supported
         SSLProtocol all -SSLv3
 ```
+If you want to be more secure and are ok with not supporting IE on Windows XP or Java 6 add " !RC4" to the end of the CipherSuite list.
 
 Set up your config files:
 If you are running cas as the default option, you will want to disable the default site or put these items in the 000-default config files.
@@ -93,7 +87,7 @@ If you are running cas as the default option, you will want to disable the defau
     #ProxyPreserveHost On
     ProxyPass "/" "ajp://localhost:8009/"
     ProxyPassReverse "/" "ajp://localhost:8009/"
-    ServerName webdev-f.sbts.edu
+    ServerName login.sbts.edu
 </VirtualHost>
 <VirtualHost *:443>
     #ProxyPreserveHost On
@@ -110,11 +104,11 @@ If you are running cas as the default option, you will want to disable the defau
 
     ProxyPass "/" "ajp://localhost:8009/"
     ProxyPassReverse "/" "ajp://localhost:8009/"
-    ServerName webdev-f.sbts.edu:443
+    ServerName login.sbts.edu:443
 </VirtualHost>
 ```
 
-```sudo a2ensite cas.conf && sudo service apache2 reload```
+```sudo service tomcat7 start && sudo a2ensite cas.conf && sudo service apache2 restart```
 
 # Install CAS
 
