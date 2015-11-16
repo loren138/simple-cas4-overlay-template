@@ -156,7 +156,7 @@
       class="org.jasig.cas.adaptors.jdbc.QueryDatabaseAuthenticationHandler"
       p:dataSource-ref="dataSourcePortal"
       p:passwordEncoder-ref="passwordEncoder"
-      p:sql="SELECT passwordSha1 FROM dbo.users WHERE username is not null AND username != '' AND passwordSha1 is not null AND username = ?"
+      p:sql="SELECT passwordSha1 FROM dbo.users WHERE username is not null AND username != '' AND is_secure = 1 AND passwordSha1 is not null AND username = ?"
       />
      <!--- p:sql="select password from users where username=? and active=1" /> -->
 

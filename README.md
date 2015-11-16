@@ -84,7 +84,9 @@ See: http://jasig.github.io/cas/4.0.x/installation/OAuth-OpenId-Authentication.h
 
 For how to use the OAuth support, see http://jasig.github.io/cas/4.0.x/protocol/OAuth-Protocol.html.
 
-You will need to configure your services in `/src/main/webapp/WEB-INF/deployerConfigContext.xml`.
+You will need to configure your services or websites in `/src/main/webapp/WEB-INF/deployerConfigContext.xml`.  You will need to copy paste the bean for a RegexRegisteredService, increment the id, and add the appropriate name, description, and serivceId (ie the web url in regex form to allow http(s), subdomains, and folders).
+
+Also, for each new website or webservice that needs access to CAS, you will need to do the above.
 
 # SQL Server Support
 
