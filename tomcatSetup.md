@@ -8,7 +8,7 @@ You should update to tomcat8 on future ubuntu versions, but I have no idea how t
 
      sudo apt-get update
      # One doc mentions maven2, you don't want that, you want maven (which installs maven3...)
-     sudo apt-get install tomcat7 maven ant maven-ant-helper openjdk-7-jdk mysql libmysql-java libtcnative-1
+     sudo apt-get install tomcat7 maven ant maven-ant-helper openjdk-7-jdk libmysql-java libtcnative-1 apache2
      # I didn't use these packages (mentioned in some of the docs)
      #sudo apt-get install tomcat7-docs tomcat7-admin
 
@@ -21,24 +21,94 @@ doc is below.
 
 http://kogentadono.com/2014/10/16/installing-cas-3-5-2-on-ubuntu-12-04-part-1-tomcat-7-and-cas/
 
+For better SSL protocol support, we'll set up a proxy through apache to tomcat.
+
+In `/etc/tomcat7/server.xml`:  Comment out the default connector and add on AJP connector.
+```
+    <!--
+    <Connector port="8080" protocol="HTTP/1.1"
+               connectionTimeout="20000"
+               URIEncoding="UTF-8"
+               redirectPort="8443" />
+    -->
+    <Connector port="8009" address="127.0.0.1" protocol="AJP/1.3" maxConnections="256" keepAliveTimeout="30000" redirectPort="8443" />
+```
+
 In `/etc/defaults/tomcat7`, I merged the JAVA_OPTS between the two docs so my line is
 
-	JAVA_OPTS="-Djava.security.egd=file:/dev/./urandom -Djava.awt.headless=true -Xms512M -Xmx1024M -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=512m -XX:+CMSIncrementalMode -Dhttps.protocols=TLSv1"
+	JAVA_OPTS="-Djava.awt.headless=true -Xms512M -Xmx1024M -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=512m -XX:+CMSIncrementalMode"
 
+#Setting Up Apache
 
-You need to uncomment
-`<Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />` in the `/etc/tomcat7/server.xml` file.
+You should edit `/var/www/html/index.html` to something for default hits to the server.
 
-If you change tomcat to port 80/443, you may need to run the following code: 
-(http://stackoverflow.com/questions/23272666/tomcat7-bind-to-port-80-fails-in-ubuntu-14-04lts)
+```sudo a2enmod proxy && sudo a2enmod proxy_http && sudo a2enmod ssl && sudo a2enmod proxy_ajp && sudo a2enmod rewrite```
 
-	sudo touch /etc/authbind/byport/80
-	sudo chmod 500 /etc/authbind/byport/80
-	sudo chown tomcat7 /etc/authbind/byport/80
-	sudo touch /etc/authbind/byport/443
-	sudo chmod 500 /etc/authbind/byport/443
-	sudo chown tomcat7 /etc/authbind/byport/443
+In your Apache /etc/apache/mods-available/ssl.conf file replace
+```
+        #SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:MEDIUM:!aNULL:!MD5
+        #SSLHonorCipherOrder on
 
+        #   The protocols to enable.
+        #   Available values: all, SSLv3, TLSv1, TLSv1.1, TLSv1.2
+        #   SSL v2  is no longer supported
+        SSLProtocol all
+```
+with
+```
+        SSLHonorCipherOrder on
+        SSLCipherSuite "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS"
+
+        #   The protocols to enable.
+        #   Available values: all, SSLv3, TLSv1, TLSv1.1, TLSv1.2
+        #   SSL v2  is no longer supported
+        SSLProtocol all -SSLv3
+```
+If you want to be more secure and are ok with not supporting IE on Windows XP or Java 6 add " !RC4" to the end of the CipherSuite list.
+
+Set up your config files:
+If you are running cas as the default option, you will want to disable the default site or put these items in the 000-default config files.
+
+/etc/apache2/sites-available/cas.conf
+```
+<VirtualHost *:80>
+    # This will enable the Rewrite capabilities
+    RewriteEngine On
+
+    # This checks to make sure the connection is not already HTTPS
+    RewriteCond %{HTTPS} !=on
+
+    # This rule will redirect users from their original location, to the same location but using HTTPS.
+    # i.e.  http://www.example.com/foo/ to https://www.example.com/foo/
+    # The leading slash is made optional so that this will work either in httpd.conf
+    # or .htaccess context
+    RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
+
+    #ProxyPreserveHost On
+    ProxyPass "/" "ajp://localhost:8009/"
+    ProxyPassReverse "/" "ajp://localhost:8009/"
+    ServerName login.sbts.edu
+</VirtualHost>
+<VirtualHost *:443>
+    #ProxyPreserveHost On
+
+    <IfModule env_module>
+         # Fake SSL if Loadbalancer does SSL-Offload 
+         SetEnvIf Front-End-Https "^on$" HTTPS=on
+    </IfModule>
+
+    SSLEngine on
+    SSLCertificateFile "/etc/apache2/ssl.crt/file.crt"
+    SSLCertificateKeyFile "/etc/apache2/ssl.key/file.key"
+    SSLCertificateChainFile "/etc/apache2/ssl.crt/gd_bundle-g2-g1-issued-20140411.crt"
+
+    ProxyPass "/" "ajp://localhost:8009/"
+    ProxyPassReverse "/" "ajp://localhost:8009/"
+    ServerName login.sbts.edu:443
+</VirtualHost>
+```
+
+```sudo service tomcat7 start && sudo a2ensite cas.conf && sudo service apache2 restart```
 
 # Install CAS
 
