@@ -231,6 +231,7 @@
             <property name="description" value="You are logging into an app within the SBTS domain." />
             <property name="serviceId" value="^(https?)://([A-Za-z0-9_-]+\.)*sbts\.edu/{0,1}.*" />
             <property name="evaluationOrder" value="0" />
+            <property name="logoutType" value="NONE" />
 	    <property name="attributeReleasePolicy">
     		<bean class="org.jasig.cas.services.ReturnAllowedAttributeReleasePolicy">
         	    <property name="allowedAttributes">
@@ -252,6 +253,7 @@
             <property name="description" value="This is for test applications only." />
             <property name="serviceId" value="^(https?)://([A-Za-z0-9_-]+\.)app/.*" />
             <property name="evaluationOrder" value="0" />
+            <property name="logoutType" value="NONE" />
 	    <property name="attributeReleasePolicy">
     		<bean class="org.jasig.cas.services.ReturnAllowedAttributeReleasePolicy">
         	    <property name="allowedAttributes">
@@ -273,6 +275,7 @@
             <property name="description" value="You are logging into an app within Dr. Mohler's website." />
             <property name="serviceId" value="^(https?)://([A-Za-z0-9_-]+\.)*albertmohler\.com/{0,1}.*" />
             <property name="evaluationOrder" value="0" />
+            <property name="logoutType" value="NONE" />
 	    <property name="attributeReleasePolicy">
     		<bean class="org.jasig.cas.services.ReturnAllowedAttributeReleasePolicy">
         	    <property name="allowedAttributes">
@@ -289,6 +292,7 @@
             <property name="description" value="You are logging into an app within the Legacy Hotel." />
             <property name="serviceId" value="^(https?)://([A-Za-z0-9_-]+\.)*legacyhotellouisville\.com/{0,1}.*" />
             <property name="evaluationOrder" value="0" />
+            <property name="logoutType" value="NONE" />
 	    <property name="attributeReleasePolicy">
     		<bean class="org.jasig.cas.services.ReturnAllowedAttributeReleasePolicy">
         	    <property name="allowedAttributes">
@@ -305,6 +309,7 @@
             <property name="description" value="You are logging into an app within Boyce College." />
             <property name="serviceId" value="^(https?)://([A-Za-z0-9_-]+\.)*boycecollege\.com/{0,1}.*" />
             <property name="evaluationOrder" value="0" />
+            <property name="logoutType" value="NONE" />
 	    <property name="attributeReleasePolicy">
     		<bean class="org.jasig.cas.services.ReturnAllowedAttributeReleasePolicy">
         	    <property name="allowedAttributes">
@@ -321,6 +326,7 @@
             <property name="description" value="You are logging into an app within the Carl F. H. Henry Institute." />
             <property name="serviceId" value="^(https?)://([A-Za-z0-9_-]+\.)*henryinstitute\.org/{0,1}.*" />
             <property name="evaluationOrder" value="0" />
+            <property name="logoutType" value="NONE" />
 	    <property name="attributeReleasePolicy">
     		<bean class="org.jasig.cas.services.ReturnAllowedAttributeReleasePolicy">
         	    <property name="allowedAttributes">
@@ -337,6 +343,7 @@
             <property name="description" value="You are logging into an app within The Andrew Fuller Center." />
             <property name="serviceId" value="^(https?)://([A-Za-z0-9_-]+\.)*andrewfullercenter\.org/{0,1}.*" />
             <property name="evaluationOrder" value="0" />
+            <property name="logoutType" value="NONE" />
 	    <property name="attributeReleasePolicy">
     		<bean class="org.jasig.cas.services.ReturnAllowedAttributeReleasePolicy">
         	    <property name="allowedAttributes">
