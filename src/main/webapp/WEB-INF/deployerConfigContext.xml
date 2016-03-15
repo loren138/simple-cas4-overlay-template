@@ -354,6 +354,23 @@
     		</bean>
   	    </property>
         </bean>
+        <bean class="org.jasig.cas.services.RegexRegisteredService">
+            <property name="id" value="8" />
+            <property name="name" value="James P. Boyce Centennial Library" />
+            <property name="description" value="You are logging into an app within The James P. Boyce Centennial Library." />
+            <property name="serviceId" value="^(https?)://(dc02vg0125na|dc02kg0543na)\.hosted\.exlibrisgroup.com:8992/{0,1}.*" />
+            <property name="evaluationOrder" value="0" />
+            <property name="logoutType" value="NONE" />
+	    <property name="attributeReleasePolicy">
+    		<bean class="org.jasig.cas.services.ReturnAllowedAttributeReleasePolicy">
+        	    <property name="allowedAttributes">
+            		<list>
+                	    <value>PROFILE_A</value>
+            		</list>
+        	    </property>
+    		</bean>
+  	    </property>
+        </bean>
     </util:list>
 
 <bean id="auditTrailManager"
